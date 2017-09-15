@@ -11,21 +11,13 @@ namespace recognition_3d
   void SegmentToMaskImage::onInit()
   {
     DiagnosticNodelet::onInit();
-    // dynamic_reconfigure
-    // srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
-    // dynamic_reconfigure::Server<Config>::CallbackType f =
-    //   boost::bind(&SegmentToMaskImage::configCallback, this, _1, _2);
-    // srv_->setCallback(f);
-
     pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
     onInitPostProcess();
   }
 
-  void SegmentToMaskImage::configCallback(
-                                          /*Config &config,*/ uint32_t level)
+  void SegmentToMaskImage::configCallback(uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    //label_value_ = config.label_value;
   }
 
   void SegmentToMaskImage::subscribe()
@@ -42,11 +34,9 @@ namespace recognition_3d
     sub_.shutdown();
   }
 
-  void SegmentToMaskImage::convert(
-                                 const sensor_msgs::Image::ConstPtr& segment_msg)
+  void SegmentToMaskImage::convert(const sensor_msgs::Image::ConstPtr& segment_msg)
   {
-    cv_bridge::CvImagePtr segment_img_ptr = cv_bridge::toCvCopy(
-                                                                segment_msg, sensor_msgs::image_encodings::TYPE_8UC3);
+    cv_bridge::CvImagePtr segment_img_ptr = cv_bridge::toCvCopy(segment_msg, sensor_msgs::image_encodings::BGR8);
 
     cv::Mat mask_image = cv::Mat::zeros(segment_msg->height,
                                         segment_msg->width,
@@ -55,14 +45,13 @@ namespace recognition_3d
       {
         for (size_t i = 0; i < segment_img_ptr->image.cols; i++)
           {
-            int segment = segment_img_ptr->image.at<int>(j, i);
-            if (segment != 0) {
+            cv::Vec3b rgb = segment_img_ptr->image.at<cv::Vec3b>(j, i);
+            if (rgb[0] != 0 || rgb[1] != 0 || rgb[2] != 0) {
               mask_image.at<uchar>(j, i) = 255;
             }
           }
       }
-    pub_.publish(cv_bridge::CvImage(
-                                    segment_msg->header,
+    pub_.publish(cv_bridge::CvImage(segment_msg->header,
                                     sensor_msgs::image_encodings::MONO8,
                                     mask_image).toImageMsg());
   }
