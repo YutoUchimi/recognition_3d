@@ -1,0 +1,123 @@
+<launch>
+
+  <!-- <include file="$(find usb_cam)/launch/usb_cam-test.launch"/> -->
+  <include file="$(find openni2_launch)/launch/openni2.launch">
+    <arg name="respawn" value="true" />
+    <arg name="load_driver" value="true" />
+    <arg name="camera" value="camera" />
+    <arg name="rgb_frame_id" value="camera_rgb_optical_frame" />
+    <arg name="depth_frame_id" value="camera_depth_optical_frame" />
+    <arg name="publish_tf" value="false" />
+    <arg name="depth_registration" value="true" />
+  </include>
+
+  <node name="segment_objects"
+        pkg="opencv_apps" type="segment_objects">
+    <remap from="image" to="/camera/rgb/image_rect_color"/>
+    <rosparam>
+      use_camera_info: false
+      debeg_view: true
+    </rosparam>
+  </node>
+
+  <node name="sample_manager"
+        pkg="nodelet" type="nodelet"
+        args="manager"/>
+
+  <node name="segment_to_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="load recognition_3d/SegmentToMaskImage /sample_manager">
+    <remap from="~input" to="segment_objects/image"/>
+  </node>
+
+  <node name="apply_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage /sample_manager">
+    <remap from="~input" to="/camera/depth_registered/hw_registered/image_rect"/>
+    <remap from="~input/mask" to="segment_to_mask_image/output"/>
+    <rosparam>
+      approximate_sync: true
+      clip: false
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <node name="kinfu"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/Kinfu /sample_manager">
+    <remap from="~input/camera_info" to="/camera/rgb/camera_info"/>
+    <remap from="~input/depth" to="apply_mask_image/output"/>
+    <remap from="~input/color" to="/camera/rgb/image_rect_color"/>
+    <rosparam>
+      integrate_color: true
+      queue_size: 10
+      n_textures: -1
+    </rosparam>
+  </node>
+
+  <!-- <node name="mask_fusion" -->
+  <!--       pkg="recognition_3d" type="mask_fusion"> -->
+  <!--   <remap from="~input" to="contour_array_to_mask/output"/> -->
+  <!--   <remap from="~input/info" to="$(arg INPUT_INFO)"/> -->
+  <!-- </node> -->
+
+  <node name="fuse_depth_images"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/FuseDepthImages /sample_manager">
+    <rosparam>
+      input_topics:
+      - kinfu/output/depth
+      <!-- - mask_fusion/output/depth -->
+      approximate_sync: true
+      queue_size: 100
+      averaging: false
+    </rosparam>
+  </node>
+
+  <node name="point_cloud_xyzrgb"
+        pkg="nodelet" type="nodelet"
+        args="load depth_image_proc/point_cloud_xyzrgb /sample_manager">
+    <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
+    <remap from="rgb/image_rect_color" to="/camera/rgb/image_rect_color"/>
+    <remap from="depth_registered/image_rect" to="fuse_depth_images/output"/>
+    <remap from="depth_registered/points" to="foreground_mask_fusion/points"/>
+    <rosparam>
+      queue_size: 10
+    </rosparam>
+  </node>
+
+  <!-- ********************** -->
+  <!-- visualize              -->
+  <!-- ********************** -->
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/test.rviz"/>
+
+  <!-- <node name="image_view_rgb" -->
+  <!--       pkg="image_view" type="image_view"> -->
+  <!--   <remap from="image" to="/camera/rgb/image_rect_color"/> -->
+  <!-- </node> -->
+
+  <!-- <node name="image_view_segment" -->
+  <!--       pkg="image_view" type="image_view"> -->
+  <!--   <remap from="image" to="/segment_objects/image"/> -->
+  <!-- </node> -->
+
+  <!-- <node name="image_view_masked_foreground" -->
+  <!--       pkg="image_view" type="image_view"> -->
+  <!--   <remap from="image" to="/segment_to_mask_image/output"/> -->
+  <!-- </node> -->
+
+  <node name="image_view_masked_depth"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="/apply_mask_image/output"/>
+    <rosparam>
+      gui: false
+      min_image_value: 0.4
+      max_image_value: 1.5
+      colormap: 2
+    </rosparam>
+  </node>
+
+</launch>
