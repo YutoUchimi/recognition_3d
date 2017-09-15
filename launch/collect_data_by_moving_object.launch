@@ -1,0 +1,69 @@
+<launch>
+  <node name="data_collection_server"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      slop: 0.5
+      save_dir: ~/.ros/bthesis/object_data
+      topics:
+        - name: /left_hand_camera/left/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info_left_hand_camera_left.yaml
+          savetype: YAML
+        - name: /left_hand_camera/left/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: rgb_image.jpg
+          savetype: ColorImage
+        - name: /left_hand_camera/fused/depth_registered/image_rect
+          msg_class: sensor_msgs/Image
+          fname: depth.npz
+          savetype: DepthImage
+        - name: /left_hand_camera/fused/depth_registered/image_rect_view
+          msg_class: sensor_msgs/Image
+          fname: depth_viz.jpg
+          savetype: ColorImage
+        - name: /left_hand/tf_to_transform/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_left_hand_camera_rgb_from_base.yaml
+          savetype: YAML
+        - name: /right_hand/tf_to_transform/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_right_hand_camera_rgb_from_base.yaml
+          savetype: YAML
+      params:
+        - key: /view_frame
+          fname: view_frame.txt
+          savetype: Text
+    </rosparam>
+  </node>
+
+  <group ns="left_hand">
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: left_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 10
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="right_hand">
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 10
+      </rosparam>
+    </node>
+  </group>
+
+  <node name="recognition_from_multi_view_by_hand"
+        pkg="recognition_3d" type="recognition-from-multi-view-by-hand.l"
+        output="screen">
+  </node>
+
+</launch>
