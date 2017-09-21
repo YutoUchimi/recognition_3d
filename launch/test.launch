@@ -65,7 +65,7 @@
 
   <node name="mask_fusion"
         pkg="nodelet" type="nodelet"
-        args="load label-fusion/MaskFusion /sample_manager">
+        args="load label_fusion/MaskFusion /sample_manager">
     <remap from="~input" to="segment_to_mask_image/output"/>
     <remap from="~input/info" to="/camera/rgb/camera_info"/>
     <remap from="~input/transform" to="tf_to_transform/output"/>
