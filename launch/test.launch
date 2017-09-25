@@ -98,7 +98,7 @@
       approximate_sync: true
       queue_size: 100
       use_depth: false
-      n_views: 10
+      n_views: 30
       resolution: 0.01
       threshold: 0.95
       ksize: 10
@@ -141,9 +141,9 @@
   <!-- visualize              -->
   <!-- ********************** -->
 
-  <!-- <node name="rviz" -->
-  <!--       pkg="rviz" type="rviz" -->
-  <!--       args="-d $(find recognition_3d)/rvizconfig/test.rviz"/> -->
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/test.rviz"/>
 
   <!-- <node name="image_view_rgb" -->
   <!--       pkg="image_view" type="image_view"> -->
