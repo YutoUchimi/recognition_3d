@@ -105,12 +105,12 @@
     </rosparam>
   </node>
 
-  <!-- <node name="depth_image_creator" -->
-  <!--       pkg="nodelet" type="nodelet" -->
-  <!--       args="load jsk_pcl/DepthImageCreator /sample_manager"> -->
-  <!--   <remap from="~input" to="mask_fusion/output"/> -->
-  <!--   <remap from="~info" to="/camera/rgb/camera_info"/> -->
-  <!-- </node> -->
+  <node name="depth_image_creator"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/DepthImageCreator /sample_manager">
+    <remap from="~input" to="mask_fusion/output"/>
+    <remap from="~info" to="/camera/rgb/camera_info"/>
+  </node>
 
   <!-- <node name="fuse_depth_images" -->
   <!--       pkg="nodelet" type="nodelet" -->
