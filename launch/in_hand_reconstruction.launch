@@ -1,0 +1,131 @@
+<launch>
+  <arg name="INPUT_RGB" default="/left_hand_camera/left/rgb/image_rect_color"/>
+  <arg name="INPUT_DEPTH" default="/left_hand_camera/fused/depth_registered/image_rect"/>
+  <arg name="INPUT_INFO" default="/left_hand_camera/left/rgb/camera_info"/>
+  <arg name="NODELET_MANAGER" default="/left_hand_camera/left/left_nodelet_manager"/>
+
+  <group ns="/left_hand_camera">
+    <node name="segment_objects"
+          pkg="opencv_apps" type="segment_objects">
+      <remap from="image" to="$(arg INPUT_RGB)"/>
+      <rosparam>
+        use_camera_info: false
+        debeg_view: true
+      </rosparam>
+    </node>
+
+    <node name="segment_to_mask_image"
+          pkg="nodelet" type="nodelet"
+          args="load recognition_3d/SegmentToMaskImage $(arg NODELET_MANAGER)">
+      <remap from="~input" to="segment_objects/image"/>
+    </node>
+
+   <node name="apply_mask_image"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_perception/ApplyMaskImage $(arg NODELET_MANAGER)">
+      <remap from="~input" to="$(arg INPUT_DEPTH)"/>
+      <remap from="~input/mask" to="segment_to_mask_image/output"/>
+      <rosparam>
+        approximate_sync: true
+        clip: false
+        queue_size: 100
+      </rosparam>
+    </node>
+
+    <node name="kinfu"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/Kinfu $(arg NODELET_MANAGER)">
+      <remap from="~input/camera_info" to="$(arg INPUT_INFO)"/>
+      <remap from="~input/depth" to="apply_mask_image/output"/>
+      <remap from="~input/color" to="$(arg INPUT_RGB)"/>
+      <rosparam>
+        integrate_color: true
+        queue_size: 10
+        n_textures: -1
+      </rosparam>
+    </node>
+
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: $(arg OBJECT_FRAME)
+        child_frame_id: $(arg CAMERA_FRAME)
+        duration: 0.1
+        rate: 50
+      </rosparam>
+    </node>
+
+    <node name="mask_fusion"
+          pkg="nodelet" type="nodelet"
+          args="load label_fusion_ros/MaskFusion $(arg NODELET_MANAGER)">
+      <remap from="~input" to="segment_to_mask_image/output"/>
+      <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+      <remap from="~input/transform" to="tf_to_transform/output"/>
+    </node>
+
+    <node name="depth_image_creator"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/DepthImageCreator $(arg NODELET_MANAGER)">
+      <remap from="~input" to="mask_fusion/output"/>
+      <remap from="~info" to="$(arg INPUT_INFO)"/>
+    </node>
+
+    <node name="fuse_depth_images"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/FuseDepthImages $(arg NODELET_MANAGER)">
+      <rosparam>
+        input_topics:
+          - kinfu/output/depth
+          - depth_image_creator/output
+        approximate_sync: true
+        queue_size: 100
+        averaging: false
+      </rosparam>
+    </node>
+
+    <node name="point_cloud_xyzrgb"
+          pkg="nodelet" type="nodelet"
+          args="load depth_image_proc/point_cloud_xyzrgb $(arg NODELET_MANAGER)">
+      <remap from="rgb/camera_info" to="$(arg INPUT_INFO)"/>
+      <remap from="rgb/image_rect_color" to="$(arg INPUT_RGB)"/>
+      <remap from="depth_registered/image_rect" to="fuse_depth_images/output"/>
+      <remap from="depth_registered/points" to="in_hand_reconstruction/points"/>
+      <rosparam>
+        queue_size: 10
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- ********************** -->
+  <!-- visualize              -->
+  <!-- ********************** -->
+
+  <group ns="/left_hand_camera">
+    <node name="image_view_depth"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="depth_registered/hw_registered/image_rect"/>
+      <rosparam>
+        gui: false
+        min_image_value: 0.4
+        max_image_value: 1.0
+        colormap: 2
+      </rosparam>
+    </node>
+
+    <node name="image_view_masked_depth"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="apply_mask_image/output"/>
+      <rosparam>
+        gui: false
+        min_image_value: 0.4
+        max_image_value: 1.0
+        colormap: 2
+      </rosparam>
+    </node>
+  </group>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/in_hand_reconstruction.rviz"/>
+
+</launch>
