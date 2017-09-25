@@ -3,6 +3,8 @@
   <arg name="INPUT_DEPTH" default="/left_hand_camera/fused/depth_registered/image_rect"/>
   <arg name="INPUT_INFO" default="/left_hand_camera/left/rgb/camera_info"/>
   <arg name="NODELET_MANAGER" default="/left_hand_camera/left/left_nodelet_manager"/>
+  <arg name="OBJECT_FRAME" default="right_hand_camera_left_rgb_optical_frame"/>
+  <arg name="CAMERA_FRAME" default="left_hand_camera_left_rgb_optical_frame"/>
 
   <group ns="/left_hand_camera">
     <node name="segment_objects"
