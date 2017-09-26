@@ -58,7 +58,7 @@
 
   <node name="static_tf_publisher_target"
         pkg="tf" type="static_transform_publisher"
-        args="0 0 0.8 0 0 0 camera_rgb_optical_frame target 20"/>
+        args="0.4 0 0.8 0.78 0 0 camera_rgb_optical_frame target 20"/>
 
   <!-- <node name="marker_6dof" -->
   <!--       pkg="jsk_interactive_marker" type="marker_6dof"> -->
@@ -82,7 +82,7 @@
     <rosparam>
       parent_frame_id: target
       child_frame_id: camera_rgb_optical_frame
-      duration: 0.1
+      duration: 1.0
       rate: 50
     </rosparam>
   </node>
@@ -95,6 +95,7 @@
     <remap from="~input/info" to="/camera/rgb/camera_info"/>
     <remap from="~input/transform" to="tf_to_transform/output"/>
     <rosparam>
+      frame_id: target
       approximate_sync: true
       queue_size: 100
       use_depth: false
