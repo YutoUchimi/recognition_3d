@@ -52,7 +52,7 @@
       <rosparam>
         parent_frame_id: $(arg OBJECT_FRAME)
         child_frame_id: $(arg CAMERA_FRAME)
-        duration: 0.1
+        duration: 1.0
         rate: 50
       </rosparam>
     </node>
@@ -63,6 +63,16 @@
       <remap from="~input" to="segment_to_mask_image/output"/>
       <remap from="~input/info" to="$(arg INPUT_INFO)"/>
       <remap from="~input/transform" to="tf_to_transform/output"/>
+      <rosparam>
+        frame_id: $(arg OBJECT_FRAME)
+        approximate_sync: true
+        queue_size: 100
+        use_depth: false
+        n_views: -1
+        resolution: 0.01
+        threshold: 0.95
+        ksize: 10
+      </rosparam>
     </node>
 
     <node name="depth_image_creator"
