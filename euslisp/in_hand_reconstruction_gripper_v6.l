@@ -4,7 +4,7 @@
 
 (ros::load-ros-manifest "jsk_arc2017_baxter")
 
-(defun init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
+(defun init (&key (ctype :default-controller) (calib-pressure nil) (moveit nil))
   (jsk_arc2017_baxter::arc-init :ctype ctype :moveit moveit)
   (when moveit
     (send *ti* :wipe-all-scene)
@@ -68,11 +68,11 @@
   (setq view_frame "1")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 2
   (send rarm-target-coords :translate #f(0 0 50) :world)
@@ -87,11 +87,11 @@
   (setq view_frame "2")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 3
   (send rarm-target-coords :rotate (deg2rad -45) :z :world)
@@ -105,11 +105,11 @@
   (setq view_frame "3")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 4
   (send rarm-target-coords :rotate (deg2rad -45) :z)
@@ -123,11 +123,11 @@
   (setq view_frame "4")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 5
   (send rarm-target-coords :rotate (deg2rad -45) :z)
@@ -141,11 +141,11 @@
   (setq view_frame "5")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 6
   (send rarm-target-coords :rotate (deg2rad -45) :z)
@@ -159,11 +159,11 @@
   (setq view_frame "6")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 7
   (send rarm-target-coords :rotate (deg2rad -45) :z)
@@ -177,11 +177,11 @@
   (setq view_frame "7")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; the same view as view 3
   (send rarm-target-coords :rotate (deg2rad 180) :z)
@@ -205,11 +205,11 @@
   (setq view_frame "8")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
 
   ;; view 9
   (send rarm-target-coords :rotate (deg2rad 45) :z)
@@ -223,11 +223,11 @@
   (setq view_frame "9")
   (ros::set-param "view_frame" view_frame)
   (unix::sleep 3)
-  (setq res
-        (ros::service-call "/data_collection_server/save_request"
-                           (instance std_srvs::TriggerRequest :init)))
-  (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
-                       view_frame (send res :success) (send res :message))
+  ;; (setq res
+  ;;       (ros::service-call "/data_collection_server/save_request"
+  ;;                          (instance std_srvs::TriggerRequest :init)))
+  ;; (ros::ros-info-green "view_frame: ~A, success: ~A, message: ~A"
+  ;;                      view_frame (send res :success) (send res :message))
   )
 
 
