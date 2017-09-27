@@ -49,7 +49,7 @@
 
     <node name="tf_to_transform"
           pkg="jsk_topic_tools" type="tf_to_transform.py">
-      <rosparam>
+      <rosparam subst_value="true">
         parent_frame_id: $(arg OBJECT_FRAME)
         child_frame_id: $(arg CAMERA_FRAME)
         duration: 1.0
@@ -63,7 +63,7 @@
       <remap from="~input" to="segment_to_mask_image/output"/>
       <remap from="~input/info" to="$(arg INPUT_INFO)"/>
       <remap from="~input/transform" to="tf_to_transform/output"/>
-      <rosparam>
+      <rosparam subst_value="true">
         frame_id: $(arg OBJECT_FRAME)
         approximate_sync: true
         queue_size: 100
