@@ -61,8 +61,8 @@
     </node>
   </group>
 
-  <node name="recognition_from_multi_view_by_hand"
-        pkg="recognition_3d" type="in_hand_reconstruction_gripper_v6.l"
+  <node name="in_hand_reconstruction_gripper_v6"
+        pkg="recognition_3d" type="in-hand-reconstruction-gripper-v6.l"
         output="screen">
   </node>
 
