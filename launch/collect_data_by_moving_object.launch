@@ -62,7 +62,7 @@
   </group>
 
   <node name="recognition_from_multi_view_by_hand"
-        pkg="recognition_3d" type="recognition-from-multi-view-by-hand.l"
+        pkg="recognition_3d" type="in_hand_reconstruction_gripper_v6.l"
         output="screen">
   </node>
 
