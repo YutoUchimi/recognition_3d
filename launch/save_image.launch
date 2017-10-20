@@ -1,0 +1,35 @@
+<launch>
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="/rviz/yes_no_button"/>
+  </node>
+
+  <node name="data_collection_server"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      slop: 0.5
+      save_dir: ~/.ros/bthesis/transparent_objects
+      topics:
+        - name: /camera/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info.yaml
+          savetype: YAML
+        - name: /camera/rgb/image_raw
+          msg_class: sensor_msgs/Image
+          fname: rgb_image.jpg
+          savetype: ColorImage
+        - name: /camera/depth_registered/hw_registered/image_rect
+          msg_class: sensor_msgs/Image
+          fname: depth.npz
+          savetype: DepthImage
+    </rosparam>
+  </node>
+
+  <node name="save_image"
+        pkg="recognition_3d" type="save-image.l"
+        output="screen">
+  </node>
+
+</launch>

@@ -1,0 +1,70 @@
+<launch>
+
+  <arg name="OBJECT_FRAME" default="pet_bottle"/>
+  <arg name="OBJECT_ID" default="f49d6c4b75f695c44d34bdc365023cf4"/>
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="/rviz/yes_no_button"/>
+  </node>
+
+  <node name="data_collection_server"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      slop: 0.5
+      save_dir: ~/data/mvtk/transparent_objects/generated_data_sample/$(arg OBJECT_ID)/scenes
+      topics:
+        - name: /camera/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info_rgb.yaml
+          savetype: YAML
+        - name: /camera/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: scene_rgb_image.jpg
+          savetype: ColorImage
+        - name: /camera/depth_registered/image_rect_view/output
+          msg_class: sensor_msgs/Image
+          fname: scene_depth_viz.jpg
+          savetype: ColorImage
+        - name: /camera/depth_registered/image_rect
+          msg_class: sensor_msgs/Image
+          fname: scene_depth.npz
+          savetype: DepthImage
+        - name: /tf_to_transform_camera_from_object/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_camera_rgb_from_object.yaml
+          savetype: YAML
+        - name: /tf_to_transform_object_from_camera/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_object_from_camera_rgb.yaml
+          savetype: YAML
+    </rosparam>
+  </node>
+
+  <node name="tf_to_transform_camera_from_object"
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+    <rosparam subst_value="true">
+      parent_frame_id: $(arg OBJECT_FRAME)
+      child_frame_id: camera_rgb_optical_frame
+      duration: 1
+      rate: 30
+    </rosparam>
+  </node>
+
+  <node name="tf_to_transform_object_from_camera"
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+    <rosparam subst_value="true">
+      parent_frame_id: camera_rgb_optical_frame
+      child_frame_id: $(arg OBJECT_FRAME)
+      duration: 1
+      rate: 30
+    </rosparam>
+  </node>
+
+  <node name="save_image"
+        pkg="recognition_3d" type="save-image.l"
+        output="screen">
+  </node>
+
+</launch>
