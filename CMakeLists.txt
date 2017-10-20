@@ -9,6 +9,7 @@ project(recognition_3d)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
+  dynamic_reconfigure
   jsk_topic_tools
   nodelet
   roscpp
@@ -93,10 +94,9 @@ find_package(Boost REQUIRED COMPONENTS filesystem system signals)
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/PublishDataset.cfg
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -111,6 +111,7 @@ catkin_package(
    INCLUDE_DIRS include
    LIBRARIES recognition_3d
    CATKIN_DEPENDS
+   dynamic_reconfigure
    sensor_msgs
    visualization_msgs
    DEPENDS system_lib
@@ -135,7 +136,7 @@ add_library(${PROJECT_NAME}
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
