@@ -13,11 +13,6 @@
     <rosparam subst_value="true">
       latch: true
       objects:
-        <!-- - id: 1 -->
-        <!--   name: avery_binder -->
-        <!--   image_resources: -->
-        <!--     - package://jsk_arc2017_common/data/objects/avery_binder/top.jpg -->
-        <!--   mesh_resource: package://jsk_arc2017_common/data/objects/avery_binder/mesh/mesh.obj -->
         - id: 1
           name: pet_bottle
           image_resources:
