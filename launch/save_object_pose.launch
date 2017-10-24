@@ -5,7 +5,7 @@
 
   <node name="rqt_yn_btn"
         pkg="jsk_rqt_plugins" type="rqt_yn_btn">
-    <remap from="~" to="/rviz/yes_no_button"/>
+    <remap from="~" to="rviz/yes_no_button"/>
   </node>
 
   <node name="data_collection_server"
@@ -31,24 +31,10 @@
           msg_class: sensor_msgs/Image
           fname: scene_depth.npz
           savetype: DepthImage
-        - name: /tf_to_transform_camera_from_object/output
-          msg_class: geometry_msgs/TransformStamped
-          fname: tf_camera_rgb_from_object.yaml
-          savetype: YAML
         - name: /tf_to_transform_object_from_camera/output
           msg_class: geometry_msgs/TransformStamped
           fname: tf_object_from_camera_rgb.yaml
           savetype: YAML
-    </rosparam>
-  </node>
-
-  <node name="tf_to_transform_camera_from_object"
-        pkg="jsk_topic_tools" type="tf_to_transform.py">
-    <rosparam subst_value="true">
-      parent_frame_id: $(arg OBJECT_FRAME)
-      child_frame_id: camera_rgb_optical_frame
-      duration: 1
-      rate: 30
     </rosparam>
   </node>
 
