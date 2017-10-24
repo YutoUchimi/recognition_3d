@@ -150,6 +150,21 @@ Visualization Manager:
             {}
       Update Interval: 0
       Value: true
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: CameraInfo
+      Topic: /camera/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 0.5
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -186,10 +201,10 @@ Visualization Manager:
         Z: 1.96689
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: -1.3148
+      Pitch: -1.1548
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.7922
+      Yaw: 4.74221
     Saved: ~
 Window Geometry:
   Depth:
