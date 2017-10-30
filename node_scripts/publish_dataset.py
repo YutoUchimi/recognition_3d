@@ -21,7 +21,7 @@ class DatasetCollectedOnShelfMultiViewScenes(object):
 
     def __init__(self):
         self.scene_ids = []
-        self.root = osp.expanduser('~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes')  # NOQA
+        self.root = osp.expanduser('~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes/for_annotation')  # NOQA
         for scene_id in sorted(os.listdir(self.root)):
             self.scene_ids.append(scene_id)
 
