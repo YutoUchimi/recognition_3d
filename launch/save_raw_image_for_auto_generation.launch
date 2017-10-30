@@ -14,7 +14,7 @@
         clear_params="true" output="screen">
     <rosparam subst_value="true">
       slop: 0.5
-      save_dir: ~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes
+      save_dir: ~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes/for_auto_generation
       topics:
         - name: /camera/rgb/camera_info
           msg_class: sensor_msgs/CameraInfo
