@@ -1,16 +1,5 @@
 <launch>
 
-  <!-- update source location for collecting data -->
-  <arg name="collect_data" default="false" />
-  <node name="interactive_adjust_shelf"
-        pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_arc2017_baxter)/config/collect_data/shelf_marker.yaml"/>
-  </node>
-  <node name="publish_bin_boxes"
-        pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
-    <rosparam command="load" file="$(find jsk_arc2017_common)/config/shelf_bin.yaml" />
-  </node>
-
   <!-- *********************************************************************************** -->
   <!-- Data collection                                                                     -->
   <!-- *********************************************************************************** -->
@@ -108,5 +97,10 @@
       <remap from="~" to="rviz/yes_no_button" />
     </node>
   </group>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/object_3d_annotaion.rviz">
+  </node>
 
 </launch>
