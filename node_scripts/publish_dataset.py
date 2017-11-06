@@ -2,6 +2,8 @@
 
 import os
 import os.path as osp
+import sys
+import glob
 
 import numpy as np
 import skimage.io
@@ -20,8 +22,10 @@ from recognition_3d.cfg import PublishDatasetConfig
 class DatasetCollectedOnShelfMultiViewScenes(object):
 
     def __init__(self):
+        if len(sys.argv) < 2:
+            print("usage: publish_dataset.py DATA_DIR")
         self.scene_ids = []
-        self.root = osp.expanduser('~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes/for_annotation')  # NOQA
+        self.root = osp.expanduser(sys.argv[1])  # NOQA
         for scene_id in sorted(os.listdir(self.root)):
             self.scene_ids.append(scene_id)
 
@@ -32,8 +36,10 @@ class DatasetCollectedOnShelfMultiViewScenes(object):
         assert 0 <= scene_idx < len(self.scene_ids)
         scene_id = self.scene_ids[scene_idx]
         scene_dir = osp.join(self.root, scene_id)
-        img = skimage.io.imread(osp.join(scene_dir, 'rgb_image.jpg'))
-        depth = np.load(osp.join(scene_dir, 'depth.npz'))['arr_0']
+        img = skimage.io.imread(
+            glob.glob(osp.join(scene_dir, 'rgb_obj_*.jpg'))[0])
+        depth = np.load(
+            glob.glob(osp.join(scene_dir, 'depth_obj_*.npz'))[0])['arr_0']
         camera_info = yaml.load(
             open(osp.join(scene_dir,
                           'camera_info.yaml')))

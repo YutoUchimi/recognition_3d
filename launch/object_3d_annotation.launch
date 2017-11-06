@@ -1,8 +1,13 @@
 <launch>
 
+  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+  <arg name="CAMERA_FRAME" value="right_hand_camera_left_rgb_optical_frame"/>
+  <arg name="OBJECT_FRAME" value="pet_bottle"/>
+  <arg name="OBJECT_ID" value="f49d6c4b75f695c44d34bdc365023cf4"/>
   <arg name="gui" default="true" />
 
   <include file="$(find recognition_3d)/launch/publish_dataset.launch">
+    <arg name="DATA_DIR" value="$(arg DATA_DIR)" />
     <arg name="gui" value="false" />
   </include>
 
@@ -31,8 +36,10 @@
   </node>
 
   <include file="$(find recognition_3d)/launch/save_object_pose.launch">
-    <arg name="OBJECT_ID" value="f49d6c4b75f695c44d34bdc365023cf4"/>
-    <arg name="OBJECT_FRAME" value="pet_bottle"/>
+    <arg name="DATA_DIR" default="$(arg DATA_DIR)" />
+    <arg name="CAMERA_FRAME" value="$(arg CAMERA_FRAME)"/>
+    <arg name="OBJECT_FRAME" value="$(arg OBJECT_FRAME)"/>
+    <arg name="OBJECT_ID" value="$(arg OBJECT_ID)"/>
   </include>
 
   <group if="$(arg gui)">

@@ -1,9 +1,11 @@
 <launch>
 
+  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
   <arg name="gui" default="true" />
 
   <node name="publish_dataset"
         pkg="recognition_3d" type="publish_dataset.py"
+        args="$(arg DATA_DIR)"
         output="screen">
     <remap from="~output/rgb/camera_info" to="camera/rgb/camera_info" />
     <remap from="~output/rgb/image_rect_color" to="camera/rgb/image_rect_color" />
