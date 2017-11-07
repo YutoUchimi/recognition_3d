@@ -5,6 +5,10 @@
   <arg name="OBJECT_FRAME" default="pet_bottle"/>
   <arg name="OBJECT_ID" default="f49d6c4b75f695c44d34bdc365023cf4"/>
 
+  <rosparam param="/mesh_id" subst_value="true">
+    mesh_id: $(arg OBJECT_ID)
+  </rosparam>
+
   <node name="rqt_yn_btn"
         pkg="jsk_rqt_plugins" type="rqt_yn_btn">
     <remap from="~" to="rviz/yes_no_button"/>
@@ -20,6 +24,10 @@
         - name: /tf_to_transform_object_from_camera/output
           msg_class: geometry_msgs/TransformStamped
           fname: tf_object_from_camera_rgb.yaml
+          savetype: YAML
+      params:
+        - key: /mesh_id
+          fname: mesh_id.yaml
           savetype: YAML
     </rosparam>
   </node>
