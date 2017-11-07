@@ -139,6 +139,8 @@ Visualization Manager:
           Value: true
         pet_bottle:
           Value: true
+        right_hand_camera_left_rgb_optical_frame:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -148,6 +150,8 @@ Visualization Manager:
         camera_rgb_optical_frame:
           pet_bottle:
             {}
+        right_hand_camera_left_rgb_optical_frame:
+          {}
       Update Interval: 0
       Value: true
     - Class: jsk_rviz_plugin/CameraInfo
@@ -168,7 +172,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: camera_rgb_optical_frame
+    Fixed Frame: right_hand_camera_left_rgb_optical_frame
     Frame Rate: 30
   Name: root
   Tools:
