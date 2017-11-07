@@ -21,8 +21,8 @@
         - id: 1
           name: pet_bottle
           image_resources:
-            - file://$(optenv HOME)/dataset/mesh_dataset_shapenet/pet_bottle_1/images/texture0.jpg
-          mesh_resource: file://$(optenv HOME)/dataset/mesh_dataset_shapenet/pet_bottle_1/models/model_normalized.obj
+            - file://$(optenv HOME)/data/dataset/mesh_dataset_shapenet/pet_bottle_1/images/texture0.jpg
+          mesh_resource: file://$(optenv HOME)/data/dataset/mesh_dataset_shapenet/pet_bottle_1/models/model_normalized.obj
     </rosparam>
   </node>
 
