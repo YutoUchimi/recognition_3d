@@ -12,12 +12,15 @@ find_package(catkin REQUIRED COMPONENTS
   dynamic_reconfigure
   jsk_topic_tools
   nodelet
+  pcl_conversions
+  pcl_ros
   roscpp
   sensor_msgs
   visualization_msgs
   )
 
 find_package(OpenCV REQUIRED)
+find_package(PCL REQUIRED COMPONENTS io)
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS filesystem system signals)
@@ -114,7 +117,7 @@ catkin_package(
    dynamic_reconfigure
    sensor_msgs
    visualization_msgs
-   DEPENDS system_lib
+   DEPENDS PCL system_lib
 )
 
 ###########
@@ -126,6 +129,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -143,6 +147,9 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(mesh_publisher src/mesh_publisher.cpp)
 target_link_libraries(mesh_publisher ${catkin_LIBRARIES})
+
+add_executable(plane_detection src/plane_detection.cpp)
+target_link_libraries(plane_detection ${catkin_LIBRARIES} ${PCL_LIBRARIES} yaml-cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
