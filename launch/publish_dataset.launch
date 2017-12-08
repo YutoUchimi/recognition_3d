@@ -1,0 +1,46 @@
+<launch>
+
+  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+  <arg name="gui" default="true" />
+
+  <node name="publish_dataset"
+        pkg="recognition_3d" type="publish_dataset.py"
+        args="$(arg DATA_DIR)"
+        output="screen">
+    <remap from="~output/rgb/camera_info" to="camera/rgb/camera_info" />
+    <remap from="~output/rgb/image_rect_color" to="camera/rgb/image_rect_color" />
+    <remap from="~output/depth_registered/camera_info" to="camera/depth_registered/camera_info" />
+    <remap from="~output/depth_registered/image_rect" to="camera/depth_registered/image_rect" />
+  </node>
+
+  <group ns="camera/depth_registered">
+    <node name="image_rect_view"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="image_rect" />
+      <rosparam>
+        gui: false
+        colormap: 2
+        min_image_value: 0.5
+        max_image_value: 2.0
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="camera">
+    <node name="point_cloud_xyzrgb"
+          pkg="nodelet" type="nodelet"
+          args="standalone depth_image_proc/point_cloud_xyzrgb">
+    </node>
+  </group>
+
+  <group if="$(arg gui)">
+    <node name="rviz"
+          pkg="rviz" type="rviz">
+    </node>
+    <node name="rqt_reconfigure"
+          pkg="rqt_reconfigure" type="rqt_reconfigure"
+          args="publish_dataset">
+    </node>
+  </group>
+
+</launch>

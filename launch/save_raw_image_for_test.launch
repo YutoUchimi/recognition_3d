@@ -1,0 +1,108 @@
+<launch>
+
+  <arg name="save_dir" value="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+
+  <!-- *********************************************************************************** -->
+  <!-- Data collection                                                                     -->
+  <!-- *********************************************************************************** -->
+
+  <group ns="obj_y">
+    <node name="data_collection_server"
+          pkg="jsk_data" type="data_collection_server.py"
+          clear_params="true" output="screen">
+      <rosparam subst_value="true">
+        save_dir: $(arg save_dir)
+        topics:
+          - name: /right_hand_camera/left/rgb/camera_info
+            msg_class: sensor_msgs/CameraInfo
+            fname: camera_info.yaml
+            savetype: YAML
+          - name: /right_hand_camera/left/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: rgb_obj_y.jpg
+            savetype: ColorImage
+          - name: /right_hand_camera/fused/depth_registered/image_rect
+            msg_class: sensor_msgs/Image
+            fname: depth_obj_y.npz
+            savetype: DepthImage
+          - name: /obj_y/tf_to_transform/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: tf_base_to_camera.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 30
+      </rosparam>
+    </node>
+
+    <node name="save_image"
+          pkg="recognition_3d" type="save-image.l"
+          output="screen">
+    </node>
+
+    <node name="rqt_yn_btn"
+          pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+      <remap from="~" to="rviz/yes_no_button" />
+    </node>
+  </group>
+
+  <group ns="obj_n">
+    <node name="data_collection_server"
+          pkg="jsk_data" type="data_collection_server.py"
+          clear_params="true" output="screen">
+      <rosparam subst_value="true">
+        save_dir: ~/data/mvtk/transparent_objects/raw_data/20171102/test
+        topics:
+          - name: /right_hand_camera/left/rgb/camera_info
+            msg_class: sensor_msgs/CameraInfo
+            fname: camera_info.yaml
+            savetype: YAML
+          - name: /right_hand_camera/left/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: rgb_obj_n.jpg
+            savetype: ColorImage
+          - name: /right_hand_camera/fused/depth_registered/image_rect
+            msg_class: sensor_msgs/Image
+            fname: depth_obj_n.npz
+            savetype: DepthImage
+          - name: /obj_n/tf_to_transform/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: tf_base_to_camera.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 30
+      </rosparam>
+    </node>
+
+    <node name="save_image"
+          pkg="recognition_3d" type="save-image.l"
+          output="screen">
+    </node>
+
+    <node name="rqt_yn_btn"
+          pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+      <remap from="~" to="rviz/yes_no_button" />
+    </node>
+  </group>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/object_3d_annotaion.rviz">
+  </node>
+
+</launch>
