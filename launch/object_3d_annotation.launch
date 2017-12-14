@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171214/test" />
   <arg name="CAMERA_FRAME" value="right_hand_camera_left_rgb_optical_frame"/>
   <arg name="OBJECT_FRAME" value="pet_bottle"/>
   <arg name="OBJECT_ID" value="f49d6c4b75f695c44d34bdc365023cf4"/>
@@ -21,8 +21,8 @@
         - id: 1
           name: pet_bottle
           image_resources:
-            - file://$(optenv HOME)/data/dataset/mesh_dataset_shapenet/pet_bottle_1/images/texture0.jpg
-          mesh_resource: file://$(optenv HOME)/data/dataset/mesh_dataset_shapenet/pet_bottle_1/models/model_normalized.obj
+            - file://$(optenv HOME)/data/mvtk/transparent_objects/ShapeNetCore.v2.scaled/02876657/f49d6c4b75f695c44d34bdc365023cf4/images/texture0.jpg
+          mesh_resource: file://$(optenv HOME)/data/mvtk/transparent_objects/ShapeNetCore.v2.scaled/02876657/f49d6c4b75f695c44d34bdc365023cf4/models/model_normalized.obj
     </rosparam>
   </node>
 

@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="save_dir" value="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+  <arg name="save_dir" value="~/data/mvtk/transparent_objects/raw_data/20171214/test" />
 
   <!-- *********************************************************************************** -->
   <!-- Data collection                                                                     -->
@@ -58,7 +58,7 @@
           pkg="jsk_data" type="data_collection_server.py"
           clear_params="true" output="screen">
       <rosparam subst_value="true">
-        save_dir: ~/data/mvtk/transparent_objects/raw_data/20171102/test
+        save_dir: $(arg save_dir)
         topics:
           - name: /right_hand_camera/left/rgb/camera_info
             msg_class: sensor_msgs/CameraInfo

@@ -1,9 +1,5 @@
 <launch>
 
-  <include file="$(find openni2_launch)/launch/openni2.launch">
-    <arg name="depth_registration" value="true"/>
-  </include>
-
   <node name="rqt_yn_btn"
         pkg="jsk_rqt_plugins" type="rqt_yn_btn">
     <remap from="~" to="/rviz/yes_no_button"/>
@@ -14,20 +10,34 @@
         clear_params="true" output="screen">
     <rosparam subst_value="true">
       slop: 0.5
-      save_dir: ~/data/mvtk/transparent_objects/raw_data_sample/f49d6c4b75f695c44d34bdc365023cf4/scenes/for_auto_generation
+      save_dir: ~/data/mvtk/transparent_objects/raw_data/20171214/train
       topics:
-        - name: /camera/rgb/camera_info
+        - name: /right_hand_camera/left/rgb/camera_info
           msg_class: sensor_msgs/CameraInfo
           fname: camera_info.yaml
           savetype: YAML
-        - name: /camera/rgb/image_raw
+        - name: /right_hand_camera/left/rgb/image_rect_color
           msg_class: sensor_msgs/Image
-          fname: rgb_image.jpg
+          fname: rgb_obj_n.jpg
           savetype: ColorImage
-        - name: /camera/depth_registered/hw_registered/image_rect
+        - name: /right_hand_camera/fused/depth_registered/image_rect
           msg_class: sensor_msgs/Image
-          fname: depth.npz
+          fname: depth_obj_n.npz
           savetype: DepthImage
+        - name: /tf_to_transform/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_base_to_camera.yaml
+          savetype: YAML
+    </rosparam>
+  </node>
+
+  <node name="tf_to_transform"
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+    <rosparam>
+      parent_frame_id: base
+      child_frame_id: right_hand_camera_left_rgb_optical_frame
+      duration: 1
+      rate: 30
     </rosparam>
   </node>
 

@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171102/test" />
+  <arg name="DATA_DIR" default="~/data/mvtk/transparent_objects/raw_data/20171214/test" />
   <arg name="gui" default="true" />
 
   <node name="publish_dataset"
