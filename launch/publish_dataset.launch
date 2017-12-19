@@ -21,7 +21,7 @@
         gui: false
         colormap: 2
         min_image_value: 0.5
-        max_image_value: 2.0
+        max_image_value: 1.2
       </rosparam>
     </node>
   </group>
