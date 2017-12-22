@@ -36,10 +36,18 @@ class DatasetCollectedOnShelfMultiViewScenes(object):
         assert 0 <= scene_idx < len(self.scene_ids)
         scene_id = self.scene_ids[scene_idx]
         scene_dir = osp.join(self.root, scene_id)
-        img = skimage.io.imread(
-            glob.glob(osp.join(scene_dir, 'rgb_obj_*.jpg'))[0])
-        depth = np.load(
-            glob.glob(osp.join(scene_dir, 'depth_obj_*.npz'))[0])['arr_0']
+        # img = skimage.io.imread(
+        #     glob.glob(osp.join(scene_dir, 'rgb_obj_*.jpg'))[0])
+        # depth = np.load(
+        #     glob.glob(osp.join(scene_dir, 'depth_obj_*.npz'))[0])['arr_0']
+        if osp.exists(osp.join(scene_dir, 'rgb_obj_y.jpg')):
+            img = skimage.io.imread(osp.join(scene_dir, 'rgb_obj_y.jpg'))
+        else:
+            img = skimage.io.imread(osp.join(scene_dir, 'rgb_obj_n.jpg'))
+        if osp.exists(osp.join(scene_dir, 'depth_obj_y.npz')):
+            depth = np.load(osp.join(scene_dir, 'depth_obj_y.npz'))['arr_0']
+        else:
+            depth = np.load(osp.join(scene_dir, 'depth_obj_n.npz'))['arr_0']
         camera_info = yaml.load(
             open(osp.join(scene_dir,
                           'camera_info.yaml')))
