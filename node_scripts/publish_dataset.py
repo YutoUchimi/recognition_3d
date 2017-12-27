@@ -3,7 +3,6 @@
 import os
 import os.path as osp
 import sys
-import glob
 
 import numpy as np
 import skimage.io
