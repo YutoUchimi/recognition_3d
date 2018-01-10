@@ -9,7 +9,7 @@
   <arg name="GPU" default="0" />
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
-  <arg name="MODEL_FILE" default="file://$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180109-112235_VCS-c7819e2/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180109-112235_VCS-c7819e2/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
   <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
 
   <arg name="rviz" default="true" />
@@ -56,12 +56,24 @@
         queue_size: 50
       </rosparam>
     </node>
+
+    <node name="depth_pred_view"
+          pkg="image_view" type="image_view" >
+      <remap from="image" to="fcn_depth_prediction/output/depth" />
+      <remap from="~output" to="~" />
+      <rosparam>
+        gui: false
+        min_image_value: 0.5
+        max_image_value: 1.0
+        colormap: 2
+      </rosparam>
+    </node>
   </group>
 
   <group if="$(arg rviz)">
     <node name="rviz"
           pkg="rviz" type="rviz"
-          args="-d $(find recognition_3d)/rvizconfig/fcn_depth_predicton.rviz" />
+          args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction.rviz" />
   </group>
 
 </launch>

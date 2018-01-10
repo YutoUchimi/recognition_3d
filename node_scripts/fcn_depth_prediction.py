@@ -88,7 +88,7 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         for sub in self.subs:
             sub.unregister()
 
-    def colorize_depth(depth, min_value=None, max_value=None):
+    def colorize_depth(self, depth, min_value=None, max_value=None):
         """Colorize depth image with JET colormap."""
         min_value = np.nanmin(depth) if min_value is None else min_value
         max_value = np.nanmax(depth) if max_value is None else max_value
@@ -140,6 +140,7 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         label_pred, proba_img, \
             depth_pred = self.segment_and_depth_predict(
                 bgr_img, depth_viz_bgr)
+
         depth_pred[label_pred == 0] = depth_img[label_pred == 0]
 
         label_msg = br.cv2_to_imgmsg(label_pred.astype(np.int32), '32SC1')
@@ -148,13 +149,13 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         proba_msg = br.cv2_to_imgmsg(proba_img.astype(np.float32))
         proba_msg.header = rgb_msg.header
         self.pub_proba.publish(proba_msg)
-        depth_msg = br.cv2_to_imgmsg(depth_img.astype(np.float32))
+        depth_msg = br.cv2_to_imgmsg(depth_pred.astype(np.float32))
         depth_msg.header = rgb_msg.header
         self.pub_depth.publish(depth_msg)
 
     def segment_and_depth_predict(self, bgr, depth_bgr):
         if self.backend == 'chainer':
-            return self._segment_chainer_backend(bgr)
+            return self._segment_chainer_backend(bgr, depth_bgr)
         raise ValueError('Unsupported backend: {0}'.format(self.backend))
 
     def _segment_chainer_backend(self, bgr, depth_bgr):
