@@ -4,8 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded: ~
-      Splitter Ratio: 0.535714
-    Tree Height: 853
+      Splitter Ratio: 0.5
+    Tree Height: 549
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -24,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: R_L_RGB
 Visualization Manager:
   Class: ""
   Displays:
@@ -354,13 +354,28 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: R_L_CameraInfo
+      Topic: /right_hand_camera/left/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 0.5
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 0.1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
     - Class: rviz/Image
       Enabled: true
       Image Topic: /right_hand_camera/left/rgb/image_rect_color
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: R_RGB
+      Name: R_L_RGB
       Normalize Range: true
       Queue Size: 2
       Transport Hint: raw
@@ -372,7 +387,31 @@ Visualization Manager:
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: R_DepthPredLabelViz
+      Name: R_DepthPred_Label
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/fused/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R_Fused_Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/depth_predicted/depth_pred_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R_DepthPred_Depth
       Normalize Range: true
       Queue Size: 2
       Transport Hint: raw
@@ -388,7 +427,7 @@ Visualization Manager:
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: ""
+      Color Transformer: RGB8
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -396,8 +435,8 @@ Visualization Manager:
       Max Intensity: 4096
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: R_DepthPredPoints
-      Position Transformer: ""
+      Name: R_DepthPred_Points
+      Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
       Size (Pixels): 2
@@ -432,33 +471,37 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10
+      Distance: 1.17616
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.706809
+        Y: -0.366885
+        Z: -0.240362
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.785398
+      Pitch: 1.4898
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.785398
+      Yaw: 1.6054
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1056
+  Height: 1028
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000018a00000396fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000396000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000017200000396fc0200000005fb0000000a0052005f0052004700420100000028000001c70000001600fffffffb000000260052005f004400650070007400680050007200650064004c006100620065006c00560069007a01000001f5000001c90000001600fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000028000002c4000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073f0000003efc0100000002fb0000000800540069006d006501000000000000073f000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000004370000039600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  R_DepthPredLabelViz:
+  QMainWindow State: 000000ff00000000fd00000004000000000000019200000266fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000013c00000266000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000013c00000266fc0200000005fb0000000e0052005f004c005f005200470042010000013c0000012d0000001600fffffffb000000220052005f004400650070007400680050007200650064005f004c006100620065006c010000026f000001330000001600fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000280000037a000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000004df0000010efc0100000003fb0000001a0052005f00460075007300650064005f0044006500700074006801000000000000026d0000009c00fffffffb000000220052005f004400650070007400680050007200650064005f0044006500700074006801000002730000026c000000be00fffffffb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004df0000003efc0100000002fb0000000800540069006d00650100000000000004df000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000002050000026600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  R_DepthPred_Depth:
     collapsed: false
-  R_RGB:
+  R_DepthPred_Label:
+    collapsed: false
+  R_Fused_Depth:
+    collapsed: false
+  R_L_RGB:
     collapsed: false
   Selection:
     collapsed: false
@@ -468,6 +511,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1855
-  X: 55
-  Y: -14
+  Width: 1247
+  X: 1272
+  Y: 14
