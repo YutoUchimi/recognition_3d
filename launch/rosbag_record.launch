@@ -1,0 +1,38 @@
+<launch>
+  <arg name="bagfile" />
+  <node name="rosbag_record"
+        pkg="rosbag" type="record"
+        args="-O $(arg bagfile)
+              -b 0
+              /tf
+              /tf_static
+              /robot/joint_states
+
+              /gripper_front/limb/right/dxl/finger_tendon_controller/state
+              /gripper_front/limb/right/dxl/finger_yaw_joint_controller/state
+              /gripper_front/limb/right/dxl/prismatic_joint_controller/state
+              /gripper_front/limb/right/dxl/vacuum_pad_tendon_controller/state
+              /gripper_front/limb/right/flex/left/state
+              /gripper_front/limb/right/flex/right/state
+              /gripper_front/limb/right/pressure/state
+              /gripper_front/limb/right/proximity_array
+              /gripper_front/limb/right/vacuum_gripper/state
+              /vacuum_gripper/limb/right/state
+
+              /right_hand_camera/left/rgb/camera_info
+              /right_hand_camera/left/rgb/image_raw/compressed
+              /right_hand_camera/left/depth/camera_info
+              /right_hand_camera/left/depth/image_raw/compressedDepth
+              /right_hand_camera/right/rgb/camera_info
+              /right_hand_camera/right/rgb/image_raw/compressed
+              /right_hand_camera/right/depth/camera_info
+              /right_hand_camera/right/depth/image_raw/compressedDepth
+
+              /scale0/output
+              /scale1/output
+              /scale2/output
+              /scale3/output
+              "
+        output="screen">
+  </node>
+</launch>
