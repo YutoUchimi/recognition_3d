@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="save_dir" value="~/data/mvtk/transparent_objects/raw_data/20171214/test" />
+  <arg name="save_dir" value="~/data/mvtk/transparent_objects/raw_data/20180112/test" />
 
   <!-- *********************************************************************************** -->
   <!-- Data collection                                                                     -->

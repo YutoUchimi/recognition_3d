@@ -9,7 +9,7 @@
   <arg name="GPU" default="0" />
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
-  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180109-112235_VCS-c7819e2/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
   <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
 
   <arg name="rviz" default="true" />
