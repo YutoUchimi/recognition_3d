@@ -1,0 +1,11 @@
+<launch>
+
+  <param name="/use_sim_time" value="true" />
+
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(optenv HOME)/.ros/rosbag/pick_010.bag --clock --loop" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/setup_for_pick.launch" />
+  
+</launch>
