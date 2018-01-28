@@ -157,7 +157,7 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         self.pub_depth.publish(depth_msg)
         depth_raw_msg = br.cv2_to_imgmsg(depth_pred_raw.astype(np.float32))
         depth_msg.header = rgb_msg.header
-        self.pub_depth.publish(depth_raw_msg)
+        self.pub_depth_raw.publish(depth_raw_msg)
 
     def segment_and_depth_predict(self, bgr, depth_bgr):
         if self.backend == 'chainer':
