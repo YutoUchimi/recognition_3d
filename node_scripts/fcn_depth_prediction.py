@@ -39,6 +39,8 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         self.pub_proba = self.advertise(
             '~output/proba_image', Image, queue_size=1)
         self.pub_depth = self.advertise('~output/depth', Image, queue_size=1)
+        self.pub_depth_raw = self.advertise(
+            '~output/depth_raw', Image, queue_size=1)
 
     def _load_model(self):
         if self.backend == 'chainer':
@@ -141,6 +143,7 @@ class FCNDepthPrediction(ConnectionBasedTransport):
             depth_pred = self.segment_and_depth_predict(
                 bgr_img, depth_viz_bgr)
 
+        depth_pred_raw = depth_pred.copy()
         depth_pred[label_pred == 0] = depth_img[label_pred == 0]
 
         label_msg = br.cv2_to_imgmsg(label_pred.astype(np.int32), '32SC1')
@@ -152,6 +155,9 @@ class FCNDepthPrediction(ConnectionBasedTransport):
         depth_msg = br.cv2_to_imgmsg(depth_pred.astype(np.float32))
         depth_msg.header = rgb_msg.header
         self.pub_depth.publish(depth_msg)
+        depth_raw_msg = br.cv2_to_imgmsg(depth_pred_raw.astype(np.float32))
+        depth_msg.header = rgb_msg.header
+        self.pub_depth.publish(depth_raw_msg)
 
     def segment_and_depth_predict(self, bgr, depth_bgr):
         if self.backend == 'chainer':
