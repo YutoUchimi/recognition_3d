@@ -132,7 +132,7 @@ class FCNDepthPrediction(ConnectionBasedTransport):
 
     def _cb(self, rgb_msg, depth_msg):
         br = cv_bridge.CvBridge()
-        rgb_img = br.imgmsg_to_cv2(rgb_msg, desired_encoding='bgr8')
+        rgb_img = br.imgmsg_to_cv2(rgb_msg, desired_encoding='rgb8')
         depth_img = br.imgmsg_to_cv2(depth_msg, desired_encoding='passthrough')
         if depth_img.ndim > 2:
             depth_img = np.squeeze(depth_img, axis=2)

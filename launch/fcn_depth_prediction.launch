@@ -10,7 +10,8 @@
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
   <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
-  <arg name="MODEL_FILE" default="$(optenv HOME)/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-154614_VCS-2347ce6/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
+  <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
   <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
 
   <arg name="rviz" default="true" />
@@ -69,7 +70,7 @@
       <rosparam>
         gui: false
         min_image_value: 0.5
-        max_image_value: 1.0
+        max_image_value: 1.2
         colormap: 2
       </rosparam>
     </node>
@@ -81,7 +82,7 @@
       <rosparam>
         gui: false
         min_image_value: 0.5
-        max_image_value: 1.0
+        max_image_value: 1.2
         colormap: 2
       </rosparam>
     </node>
