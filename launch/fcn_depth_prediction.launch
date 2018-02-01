@@ -29,6 +29,7 @@
         backend: $(arg BACKEND)
         model_name: $(arg MODEL_NAME)
         model_file: $(arg MODEL_FILE)
+        approximate_sync: true
       </rosparam>
     </node>
 
