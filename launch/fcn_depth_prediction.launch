@@ -1,23 +1,24 @@
 <launch>
 
-  <arg name="CAMERA_NS" default="/right_hand_camera/left" />
-  <!-- <arg name="CAMERA_NS" default="/kinect_head" /> -->
+  <arg name="baxter" default="true" />
+
+  <arg name="CAMERA_NS" default="/right_hand_camera/left" if="$(arg baxter)" />
+  <arg name="CAMERA_NS" default="/kinect_head" unless="$(arg baxter)" />
   <arg name="INPUT_IMAGE" default="$(arg CAMERA_NS)/rgb/image_rect_color" />
   <arg name="INPUT_CAMERA_INFO" default="$(arg CAMERA_NS)/rgb/camera_info" />
-  <arg name="INPUT_DEPTH" default="/right_hand_camera/fused/depth_registered/image_rect"/>
-  <!-- <arg name="INPUT_DEPTH" default="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect"/> -->
-  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/left_nodelet_manager" />
-  <!-- <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/kinect_head_nodelet_manager" /> -->
+  <arg name="INPUT_DEPTH" default="/right_hand_camera/fused/depth_registered/image_rect" if="$(arg baxter)"/>
+  <arg name="INPUT_DEPTH" default="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect" unless="$(arg baxter)" />
+  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/left_nodelet_manager" if="$(arg baxter)"/>
+  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/kinect_head_nodelet_manager" unless="$(arg baxter)" />
 
   <arg name="GPU" default="0" />
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
-  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
-  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
+  <arg name="MODEL_FILE" default="$(optenv HOME)/.ros/data/recognition_3d/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" if="$(arg baxter)" />
+  <arg name="MODEL_FILE" default="$(optenv HOME)/.ros/data/recognition_3d/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" unless="$(arg baxter)" />
   <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
 
   <arg name="rviz" default="true" />
-  <arg name="baxter" default="true" />
 
   <group ns="$(arg CAMERA_NS)/depth_predicted">
     <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
