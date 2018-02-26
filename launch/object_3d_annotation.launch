@@ -1,7 +1,7 @@
 <launch>
 
-  <arg name="DATA_DIR" default="$(optenv HOME)/data/mvtk/transparent_objects/raw_data/20171220/test" />
-  <arg name="CAMERA_FRAME" value="right_hand_camera_left_rgb_optical_frame"/>
+  <arg name="DATA_DIR" default="$(optenv HOME)/data/mvtk/transparent_objects/raw_data_refrigerator/20180130/test" />
+  <arg name="CAMERA_FRAME" value="head_mount_kinect_rgb_optical_frame"/>
   <arg name="OBJECT_FRAME" value="pet_bottle"/>
   <arg name="OBJECT_ID" value="f49d6c4b75f695c44d34bdc365023cf4"/>
   <arg name="gui" default="true" />

@@ -3,7 +3,8 @@ Panels:
     Help Height: 0
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Status1
       Splitter Ratio: 0.5
     Tree Height: 427
   - Class: rviz/Selection
@@ -168,7 +169,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: right_hand_camera_left_rgb_optical_frame
+    Fixed Frame: head_mount_kinect_rgb_optical_frame
     Frame Rate: 30
   Name: root
   Tools:
@@ -189,7 +190,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.20168
+      Distance: 2.3444
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -201,10 +202,10 @@ Visualization Manager:
         Z: 0.61048
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: -1.5698
+      Pitch: -0.974796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.64809
+      Yaw: 4.58309
     Saved: ~
 Window Geometry:
   Displays:

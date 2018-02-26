@@ -1,0 +1,68 @@
+<launch>
+
+  <arg name="save_dir" value="~/bthesis_tmp" />
+
+  <!-- *********************************************************************************** -->
+  <!-- Data collection                                                                     -->
+  <!-- *********************************************************************************** -->
+
+  <node name="data_collection_server"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      save_dir: $(arg save_dir)
+      topics:
+        - name: /right_hand_camera/left/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: rgb_image.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/left/depth_registered/image_rect_view
+          msg_class: sensor_msgs/Image
+          fname: depth_ir.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/stereo/depth_registered/image_rect_view
+          msg_class: sensor_msgs/Image
+          fname: depth_stereo.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/fused/depth_registered/image_rect_view
+          msg_class: sensor_msgs/Image
+          fname: depth_fused.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/depth_predicted/depth_pred_view
+          msg_class: sensor_msgs/Image
+          fname: depth_replaced.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/depth_predicted/label_image_decomposer/output/label_viz
+          msg_class: sensor_msgs/Image
+          fname: label_predicted.jpg
+          savetype: ColorImage
+
+        - name: /right_hand_camera/depth_predicted/depth_pred_raw_view
+          msg_class: sensor_msgs/Image
+          fname: depth_predicted.jpg
+          savetype: ColorImage
+      slop: 0.5
+    </rosparam>
+  </node>
+
+  <node name="save_image"
+        pkg="recognition_3d" type="save-image.l"
+        output="screen">
+  </node>
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="rviz/yes_no_button" />
+  </node>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find recognition_3d)/rvizconfig/object_3d_annotaion.rviz">
+  </node>
+
+</launch>

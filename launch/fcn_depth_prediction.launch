@@ -1,0 +1,109 @@
+<launch>
+
+  <arg name="CAMERA_NS" default="/right_hand_camera/left" />
+  <!-- <arg name="CAMERA_NS" default="/kinect_head" /> -->
+  <arg name="INPUT_IMAGE" default="$(arg CAMERA_NS)/rgb/image_rect_color" />
+  <arg name="INPUT_CAMERA_INFO" default="$(arg CAMERA_NS)/rgb/camera_info" />
+  <arg name="INPUT_DEPTH" default="/right_hand_camera/fused/depth_registered/image_rect"/>
+  <!-- <arg name="INPUT_DEPTH" default="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect"/> -->
+  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/left_nodelet_manager" />
+  <!-- <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/kinect_head_nodelet_manager" /> -->
+
+  <arg name="GPU" default="0" />
+  <arg name="BACKEND" default="chainer" />
+  <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
+  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
+  <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
+
+  <arg name="rviz" default="true" />
+  <arg name="baxter" default="true" />
+
+  <group ns="$(arg CAMERA_NS)/depth_predicted">
+    <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
+
+    <node name="fcn_depth_prediction"
+          pkg="recognition_3d" type="fcn_depth_prediction.py"
+          output="screen"
+          respawn="true" >
+      <remap from="~input/rgb" to="$(arg INPUT_IMAGE)" />
+      <remap from="~input/depth" to="$(arg INPUT_DEPTH)" />
+      <remap from="~target_names" to="label_names" />
+      <rosparam subst_value="true">
+        gpu: $(arg GPU)
+        backend: $(arg BACKEND)
+        model_name: $(arg MODEL_NAME)
+        model_file: $(arg MODEL_FILE)
+        approximate_sync: true
+      </rosparam>
+    </node>
+
+    <node name="label_image_decomposer"
+          pkg="jsk_perception" type="label_image_decomposer.py"
+          respawn="true" >
+      <remap from="~input" to="$(arg INPUT_IMAGE)" />
+      <remap from="~input/label" to="fcn_depth_prediction/output/label" />
+      <remap from="~label_names" to="label_names" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 100
+        alpha: 0.7
+      </rosparam>
+    </node>
+
+    <node name="point_cloud_xyzrgb"
+          pkg="nodelet" type="nodelet"
+          args="load depth_image_proc/point_cloud_xyzrgb $(arg NODELET_MANAGER)"
+          output="screen"
+          respawn="true" >
+      <remap from="rgb/camera_info" to="$(arg INPUT_CAMERA_INFO)" />
+      <remap from="rgb/image_rect_color" to="$(arg INPUT_IMAGE)" />
+      <remap from="depth_registered/image_rect" to="fcn_depth_prediction/output/depth" />
+      <remap from="depth_registered/points" to="points" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 50
+      </rosparam>
+    </node>
+
+    <node name="depth_pred_view"
+          pkg="image_view" type="image_view" >
+      <remap from="image" to="fcn_depth_prediction/output/depth" />
+      <remap from="~output" to="~" />
+      <rosparam>
+        gui: false
+        min_image_value: 0.5
+        max_image_value: 1.2
+        colormap: 2
+      </rosparam>
+    </node>
+
+    <node name="depth_pred_raw_view"
+          pkg="image_view" type="image_view" >
+      <remap from="image" to="fcn_depth_prediction/output/depth_raw" />
+      <remap from="~output" to="~" />
+      <rosparam>
+        gui: false
+        min_image_value: 0.5
+        max_image_value: 1.2
+        colormap: 2
+      </rosparam>
+    </node>
+  </group>
+
+  <group if="$(arg rviz)">
+    <group if="$(arg baxter)" >
+      <node name="rviz"
+            pkg="rviz" type="rviz"
+            args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction.rviz" >
+      </node>
+    </group>
+    <group unless="$(arg baxter)" >
+      <node name="rviz"
+            pkg="rviz" type="rviz"
+            args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction_pr2.rviz" >
+      </node>
+    </group>
+  </group>
+
+</launch>
