@@ -4,7 +4,8 @@
 
   <node name="rosbag_play"
         pkg="rosbag" type="play"
-        args="$(optenv HOME)/.ros/rosbag/pick_009.bag --clock --loop" />
+        args="$(optenv HOME)/.ros/rosbag/pick_009.bag --clock --loop" >
+  </node>
 
   <!-- camera -->
   <group ns="/right_hand_camera/left/rgb">
@@ -69,7 +70,8 @@
     <group if="$(arg stereo)">
       <include file="$(find recognition_3d)/launch/fcn_depth_prediction.launch">
         <arg name="GPU" value="0" />
-        <arg name="rviz" value="false" />
+        <arg name="rviz" value="true" />
+        <arg name="baxter" value="true" />
       </include>
     </group>
     <group unless="$(arg stereo)">
@@ -79,7 +81,8 @@
         <arg name="INPUT_DEPTH" value="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect" />
         <arg name="NODELET_MANAGER" value="$(arg CAMERA_NS)/right_hand_camera_nodelet_manager" />
         <arg name="GPU" value="0" />
-        <arg name="rviz" value="false" />
+        <arg name="rviz" value="true" />
+        <arg name="baxter" value="true" />
       </include>
     </group>
   </group>

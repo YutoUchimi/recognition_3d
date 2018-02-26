@@ -1,20 +1,23 @@
 <launch>
 
-  <arg name="CAMERA_NS" default="/kinect_head" />
+  <arg name="CAMERA_NS" default="/right_hand_camera/left" />
+  <!-- <arg name="CAMERA_NS" default="/kinect_head" /> -->
   <arg name="INPUT_IMAGE" default="$(arg CAMERA_NS)/rgb/image_rect_color" />
   <arg name="INPUT_CAMERA_INFO" default="$(arg CAMERA_NS)/rgb/camera_info" />
-  <arg name="INPUT_DEPTH" default="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect"/>
-  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/kinect_head_nodelet_manager" />
+  <arg name="INPUT_DEPTH" default="/right_hand_camera/fused/depth_registered/image_rect"/>
+  <!-- <arg name="INPUT_DEPTH" default="$(arg CAMERA_NS)/depth_registered/hw_registered/image_rect"/> -->
+  <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/left_nodelet_manager" />
+  <!-- <arg name="NODELET_MANAGER" default="$(arg CAMERA_NS)/kinect_head_nodelet_manager" /> -->
 
   <arg name="GPU" default="0" />
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn8s_at_once_input_rgbd" />
-  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
-  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-154614_VCS-2347ce6/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
-  <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <arg name="MODEL_FILE" default="$(optenv HOME)/mvtk/mvtk/experiments/transparent_objects/python/logs/fcn8s_TIME-20180113-174746_VCS-2c08420/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" />
+  <!-- <arg name="MODEL_FILE" default="$(optenv HOME)/fcn8s_TIME-20180201-153742_VCS-35a9c62/FCN8sAtOnceInputRGBD_model_max_depth_accuracy.npz" /> -->
   <arg name="LABEL_YAML" default="$(find recognition_3d)/config/label_names.yaml" />
 
   <arg name="rviz" default="true" />
+  <arg name="baxter" default="true" />
 
   <group ns="$(arg CAMERA_NS)/depth_predicted">
     <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
@@ -89,9 +92,18 @@
   </group>
 
   <group if="$(arg rviz)">
-    <node name="rviz"
-          pkg="rviz" type="rviz"
-          args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction_pr2.rviz" />
+    <group if="$(arg baxter)" >
+      <node name="rviz"
+            pkg="rviz" type="rviz"
+            args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction.rviz" >
+      </node>
+    </group>
+    <group unless="$(arg baxter)" >
+      <node name="rviz"
+            pkg="rviz" type="rviz"
+            args="-d $(find recognition_3d)/rvizconfig/fcn_depth_prediction_pr2.rviz" >
+      </node>
+    </group>
   </group>
 
 </launch>
