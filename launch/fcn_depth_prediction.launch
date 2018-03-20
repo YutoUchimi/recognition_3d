@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="baxter" default="true" />
+  <arg name="baxter" default="false" />
 
   <arg name="CAMERA_NS" default="/right_hand_camera/left" if="$(arg baxter)" />
   <arg name="CAMERA_NS" default="/kinect_head" unless="$(arg baxter)" />
@@ -64,6 +64,18 @@
       <rosparam>
         approximate_sync: true
         queue_size: 50
+      </rosparam>
+    </node>
+
+    <node name="depth_pred_input_view"
+          pkg="image_view" type="image_view" >
+      <remap from="image" to="$(arg INPUT_DEPTH)" />
+      <remap from="~output" to="~" />
+      <rosparam>
+        gui: false
+        min_image_value: 0.5
+        max_image_value: 1.2
+        colormap: 2
       </rosparam>
     </node>
 
