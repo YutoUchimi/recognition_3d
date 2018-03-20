@@ -176,7 +176,7 @@ Visualization Manager:
         All Enabled: true
         camera_rgb_optical_frame:
           Value: true
-        target:
+        kinfu_origin:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -185,7 +185,7 @@ Visualization Manager:
       Show Names: true
       Tree:
         camera_rgb_optical_frame:
-          target:
+          kinfu_origin:
             {}
       Update Interval: 0
       Value: true
@@ -225,7 +225,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: target
+    Fixed Frame: kinfu_origin
     Frame Rate: 30
   Name: root
   Tools:
@@ -246,22 +246,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.91008
+      Distance: 5.09348
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 1.08757
+        Y: 0.802706
+        Z: -0.015312
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: -1.1898
+      Pitch: -1.3098
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.70356
+      Yaw: 4.71856
     Saved: ~
 Window Geometry:
   Closing:

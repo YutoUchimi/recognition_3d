@@ -1,5 +1,9 @@
 <launch>
 
+  <arg name="DEPTH_REGISTRATION" default="true" />
+  <arg name="USE_DEPTH" default="false" />
+  <arg name="KINFU" default="true" />
+
   <!-- <include file="$(find usb_cam)/launch/usb_cam-test.launch"/> -->
   <include file="$(find openni2_launch)/launch/openni2.launch">
     <arg name="respawn" value="true" />
@@ -8,7 +12,7 @@
     <arg name="rgb_frame_id" value="camera_rgb_optical_frame" />
     <arg name="depth_frame_id" value="camera_depth_optical_frame" />
     <arg name="publish_tf" value="false" />
-    <arg name="depth_registration" value="true" />
+    <arg name="depth_registration" value="$(arg DEPTH_REGISTRATION)" />
   </include>
 
   <node name="segment_objects"
@@ -16,24 +20,15 @@
     <remap from="image" to="/camera/rgb/image_rect_color"/>
     <rosparam>
       use_camera_info: false
-      debeg_view: true
-      h_limit_max: 210
-      h_limit_min: 170
-      s_limit_max: 200
-      s_limit_min: 75
-      l_limit_max: 190
-      l_limit_min: 110
+      debug_view: false
+      h_limit_max: 100
+      h_limit_min: 40
+      s_limit_max: 256
+      s_limit_min: 40
+      l_limit_max: 256
+      l_limit_min: 70
     </rosparam>
   </node>
-
-  <!-- <node name="segment_objects" -->
-  <!--       pkg="opencv_apps" type="segment_objects"> -->
-  <!--   <remap from="image" to="/camera/rgb/image_rect_color"/> -->
-  <!--   <rosparam> -->
-  <!--     use_camera_info: false -->
-  <!--     debeg_view: true -->
-  <!--   </rosparam> -->
-  <!-- </node> -->
 
   <node name="sample_manager"
         pkg="nodelet" type="nodelet"
@@ -67,7 +62,10 @@
   <node name="apply_mask_image"
         pkg="nodelet" type="nodelet"
         args="load jsk_perception/ApplyMaskImage /sample_manager">
-    <remap from="~input" to="/camera/depth_registered/hw_registered/image_rect"/>
+    <remap from="~input" to="/camera/depth_registered/hw_registered/image_rect"
+           if="$(arg DEPTH_REGISTRATION)"/>
+    <remap from="~input" to="/camera/depth_registered/sw_registered/image_rect"
+           unless="$(arg DEPTH_REGISTRATION)"/>
     <!-- <remap from="~input/mask" to="segment_to_mask_image/output"/> -->
     <remap from="~input/mask" to="closing/output"/>
     <rosparam>
@@ -77,69 +75,100 @@
     </rosparam>
   </node>
 
-  <!-- <node name="kinfu" -->
-  <!--       pkg="nodelet" type="nodelet" -->
-  <!--       args="load jsk_pcl/Kinfu /sample_manager"> -->
-  <!--   <remap from="~input/camera_info" to="/camera/rgb/camera_info"/> -->
-  <!--   <remap from="~input/depth" to="apply_mask_image/output"/> -->
-  <!--   <remap from="~input/color" to="/camera/rgb/image_rect_color"/> -->
-  <!--   <rosparam> -->
-  <!--     integrate_color: true -->
-  <!--     queue_size: 10 -->
-  <!--     n_textures: -1 -->
-  <!--   </rosparam> -->
-  <!-- </node> -->
+  <group if="$(arg KINFU)">
+    <node name="kinfu"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/Kinfu /sample_manager">
+      <remap from="~input/camera_info" to="/camera/rgb/camera_info"/>
+      <remap from="~input/depth" to="apply_mask_image/output"/>
+      <remap from="~input/color" to="/camera/rgb/image_rect_color"/>
+      <rosparam>
+        integrate_color: true
+        auto_reset: true
+        queue_size: 10
+        n_textures: -1
+      </rosparam>
+    </node>
 
-  <!-- <node name="static_tf_publisher_target" -->
-  <!--       pkg="tf" type="static_transform_publisher" -->
-  <!--       args="0.4 0 0.8 0.78 0 0 camera_rgb_optical_frame target 20"/> -->
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: kinfu_origin
+        child_frame_id: camera_rgb_optical_frame
+        duration: 1.0
+        rate: 50
+      </rosparam>
+    </node>
 
-  <node name="marker_6dof"
-        pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam>
-      object_type: cube
-      frame_id: camera_rgb_optical_frame
-      publish_tf: true
-      tf_frame: target
-      object_x: 0.1
-      object_y: 0.1
-      object_z: 0.1
-      initial_x: 0.0
-      initial_y: 0.0
-      initial_z: 0.8
-      initial_orientation: [0, 0, 0, 1]
-    </rosparam>
-  </node>
+    <node name="mask_fusion"
+          pkg="nodelet" type="nodelet"
+          args="load label_fusion_ros/MaskFusion /sample_manager"
+          output="screen">
+      <remap from="~input" to="closing/output"/>
+      <remap from="~input/info" to="/camera/rgb/camera_info"/>
+      <remap from="~input/transform" to="tf_to_transform/output"/>
+      <rosparam subst_value="true">
+        frame_id: kinfu_origin
+        approximate_sync: true
+        queue_size: 10
+        use_depth: $(arg USE_DEPTH)
+        resolution: 0.01
+        threshold: 0.25
+        ksize: 10
+      </rosparam>
+    </node>
+  </group>
 
-  <node name="tf_to_transform"
-        pkg="jsk_topic_tools" type="tf_to_transform.py">
-    <rosparam>
-      parent_frame_id: target
-      child_frame_id: camera_rgb_optical_frame
-      duration: 1.0
-      rate: 50
-    </rosparam>
-  </node>
+  <group unless="$(arg KINFU)">
+    <node name="static_tf_publisher_target"
+          pkg="tf" type="static_transform_publisher"
+          args="0.4 0 0.8 0.78 0 0 camera_rgb_optical_frame world 20"/>
 
-  <node name="mask_fusion"
-        pkg="nodelet" type="nodelet"
-        args="load label_fusion_ros/MaskFusion /sample_manager"
-        output="screen">
-    <!-- <remap from="~input" to="segment_to_mask_image/output"/> -->
-    <remap from="~input" to="closing/output"/>
-    <remap from="~input/info" to="/camera/rgb/camera_info"/>
-    <remap from="~input/transform" to="tf_to_transform/output"/>
-    <rosparam>
-      frame_id: target
-      approximate_sync: true
-      queue_size: 100
-      use_depth: false
-      n_views: -1
-      resolution: 0.01
-      threshold: 0.01
-      ksize: 2
-    </rosparam>
-  </node>
+    <!-- <node name="marker_6dof" -->
+    <!--       pkg="jsk_interactive_marker" type="marker_6dof"> -->
+    <!--   <rosparam> -->
+    <!--     object_type: cube -->
+    <!--     frame_id: camera_rgb_optical_frame -->
+    <!--     publish_tf: true -->
+    <!--     tf_frame: world -->
+    <!--     object_x: 0.1 -->
+    <!--     object_y: 0.1 -->
+    <!--     object_z: 0.1 -->
+    <!--     initial_x: 0.0 -->
+    <!--     initial_y: 0.0 -->
+    <!--     initial_z: 0.8 -->
+    <!--     initial_orientation: [0, 0, 0, 1] -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: world
+        child_frame_id: camera_rgb_optical_frame
+        duration: 1.0
+        rate: 50
+      </rosparam>
+    </node>
+
+    <node name="mask_fusion"
+          pkg="nodelet" type="nodelet"
+          args="load label_fusion_ros/MaskFusion /sample_manager"
+          output="screen">
+      <remap from="~input" to="closing/output"/>
+      <remap from="~input/info" to="/camera/rgb/camera_info"/>
+      <remap from="~input/transform" to="tf_to_transform/output"/>
+      <rosparam subst_value="true">
+        frame_id: world
+        approximate_sync: true
+        queue_size: 10
+        use_depth: $(arg USE_DEPTH)
+        resolution: 0.01
+        threshold: 0.25
+        ksize: 10
+      </rosparam>
+    </node>
+  </group>
 
   <node name="depth_image_creator"
         pkg="nodelet" type="nodelet"
@@ -148,30 +177,32 @@
     <remap from="~info" to="/camera/rgb/camera_info"/>
   </node>
 
-  <!-- <node name="fuse_depth_images" -->
-  <!--       pkg="nodelet" type="nodelet" -->
-  <!--       args="load jsk_pcl/FuseDepthImages /sample_manager"> -->
-  <!--   <rosparam> -->
-  <!--     input_topics: -->
-  <!--     - kinfu/output/depth -->
-  <!--     - depth_image_creator/output -->
-  <!--     approximate_sync: true -->
-  <!--     queue_size: 100 -->
-  <!--     averaging: false -->
-  <!--   </rosparam> -->
-  <!-- </node> -->
+  <group if="$(arg KINFU)">
+    <node name="fuse_depth_images"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/FuseDepthImages /sample_manager">
+      <rosparam>
+        input_topics:
+        - kinfu/output/depth
+        - depth_image_creator/output
+        approximate_sync: true
+        queue_size: 100
+        averaging: false
+      </rosparam>
+    </node>
 
-  <!-- <node name="point_cloud_xyzrgb" -->
-  <!--       pkg="nodelet" type="nodelet" -->
-  <!--       args="load depth_image_proc/point_cloud_xyzrgb /sample_manager"> -->
-  <!--   <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/> -->
-  <!--   <remap from="rgb/image_rect_color" to="/camera/rgb/image_rect_color"/> -->
-  <!--   <remap from="depth_registered/image_rect" to="fuse_depth_images/output"/> -->
-  <!--   <remap from="depth_registered/points" to="in_hand_reconstruction/points"/> -->
-  <!--   <rosparam> -->
-  <!--     queue_size: 10 -->
-  <!--   </rosparam> -->
-  <!-- </node> -->
+    <node name="point_cloud_xyzrgb"
+          pkg="nodelet" type="nodelet"
+          args="load depth_image_proc/point_cloud_xyzrgb /sample_manager">
+      <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
+      <remap from="rgb/image_rect_color" to="/camera/rgb/image_rect_color"/>
+      <remap from="depth_registered/image_rect" to="fuse_depth_images/output"/>
+      <remap from="depth_registered/points" to="yellow_objects/points"/>
+      <rosparam>
+        queue_size: 10
+      </rosparam>
+    </node>
+  </group>
 
   <!-- ********************** -->
   <!-- visualize              -->
@@ -181,14 +212,12 @@
         pkg="rviz" type="rviz"
         args="-d $(find recognition_3d)/rvizconfig/test_color_filter.rviz"/>
 
-  <!-- <node name="image_view_rgb" -->
-  <!--       pkg="image_view" type="image_view"> -->
-  <!--   <remap from="image" to="/camera/rgb/image_rect_color"/> -->
-  <!-- </node> -->
-
   <node name="image_view_depth"
         pkg="image_view" type="image_view">
-    <remap from="image" to="/camera/depth_registered/hw_registered/image_rect"/>
+    <remap from="image" to="/camera/depth_registered/hw_registered/image_rect"
+           if="$(arg DEPTH_REGISTRATION)"/>
+    <remap from="image" to="/camera/depth_registered/sw_registered/image_rect"
+           unless="$(arg DEPTH_REGISTRATION)"/>
     <rosparam>
       gui: false
       min_image_value: 0.4
@@ -196,16 +225,6 @@
       colormap: 2
     </rosparam>
   </node>
-
-  <!-- <node name="image_view_segment" -->
-  <!--       pkg="image_view" type="image_view"> -->
-  <!--   <remap from="image" to="/segment_objects/image"/> -->
-  <!-- </node> -->
-
-  <!-- <node name="image_view_masked_foreground" -->
-  <!--       pkg="image_view" type="image_view"> -->
-  <!--   <remap from="image" to="/segment_to_mask_image/output"/> -->
-  <!-- </node> -->
 
   <node name="image_view_masked_depth"
         pkg="image_view" type="image_view">

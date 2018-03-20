@@ -177,7 +177,7 @@ Visualization Manager:
         All Enabled: true
         camera_rgb_optical_frame:
           Value: true
-        target:
+        world:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -186,14 +186,14 @@ Visualization Manager:
       Show Names: true
       Tree:
         camera_rgb_optical_frame:
-          target:
+          world:
             {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: camera_rgb_optical_frame
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -226,10 +226,10 @@ Visualization Manager:
         Z: 0
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: -1.1398
+      Pitch: -0.889797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.73359
+      Yaw: 3.93359
     Saved: ~
 Window Geometry:
   Displays:
